@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.city/schemas/hermes-fastpath-proposal.schema.json",
+  "title": "Hermes FASTPATH Proposal",
+  "description": "Output of a FASTPATH specialist after the validator. It is a proposal only: authority_class is fixed to PROPOSAL and executable is fixed to false until the Policy gate evaluates it against the Execution Envelope. Runtime enforcement: planned.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposal_id", "envelope_id", "job_id", "specialist", "capability", "validator", "authority_class", "executable", "requires_policy_gate"],
+  "properties": {
+    "proposal_id": { "type": "string", "pattern": "^fp_[A-Za-z0-9_-]{8,64}$" },
+    "envelope_id": { "type": "string", "pattern": "^env_[A-Za-z0-9_-]{8,64}$" },
+    "job_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "specialist": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+    "capability": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "validator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome"],
+      "properties": { "outcome": { "enum": ["passed", "failed"] }, "reason": { "type": "string", "maxLength": 512 } }
+    },
+    "authority_class": { "const": "PROPOSAL" },
+    "executable": { "const": false },
+    "requires_policy_gate": { "const": true }
+  }
+}
