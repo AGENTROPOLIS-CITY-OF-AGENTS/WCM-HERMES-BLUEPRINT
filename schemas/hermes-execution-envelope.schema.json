@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.city/schemas/hermes-execution-envelope.schema.json",
+  "title": "Hermes Execution Envelope (AEGIS-issued, Policy-evaluated)",
+  "description": "Bounded authority for one Hermes job. Issued by AEGIS; the only source of authority for FASTPATH or resumed actions. Runtime enforcement: planned.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["envelope_id", "job_id", "issuer", "allowed_capabilities", "denied_capabilities", "approval_required", "budget", "issued_at", "expires_at"],
+  "properties": {
+    "envelope_id": { "type": "string", "pattern": "^env_[A-Za-z0-9_-]{8,64}$" },
+    "job_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "issuer": { "const": "AEGIS" },
+    "allowed_capabilities": { "$ref": "#/$defs/capabilitySet" },
+    "denied_capabilities": { "$ref": "#/$defs/capabilitySet" },
+    "approval_required": { "type": "boolean" },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_actions", "max_reasoning_tokens"],
+      "properties": {
+        "max_actions": { "type": "integer", "minimum": 0, "maximum": 100000 },
+        "max_reasoning_tokens": { "type": "integer", "minimum": 0, "maximum": 100000000 }
+      }
+    },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "capabilitySet": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" }
+    }
+  }
+}
