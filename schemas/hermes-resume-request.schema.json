@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.city/schemas/hermes-resume-request.schema.json",
+  "title": "Hermes Resume Request (post Capability Acquisition)",
+  "description": "A resume after capability acquisition. Must reference the ORIGINAL envelope and re-enter Policy. It carries no authority of its own; the acquired capability is available, not allowed, until Policy says so. Runtime enforcement: planned.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "resume_id",
+    "original_envelope_id",
+    "job_id",
+    "acquired_capabilities",
+    "requested_capabilities",
+    "budget_consumed",
+    "budget_requested",
+    "policy_reentry",
+    "resumed_at"
+  ],
+  "properties": {
+    "resume_id": {
+      "type": "string",
+      "pattern": "^res_[A-Za-z0-9_-]{8,64}$"
+    },
+    "original_envelope_id": {
+      "type": "string",
+      "pattern": "^env_[A-Za-z0-9_-]{8,64}$"
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "acquired_capabilities": {
+      "$ref": "hermes-execution-envelope.schema.json#/$defs/capabilitySet"
+    },
+    "requested_capabilities": {
+      "$ref": "hermes-execution-envelope.schema.json#/$defs/capabilitySet"
+    },
+    "budget_consumed": {
+      "$ref": "#/$defs/budgetDelta"
+    },
+    "budget_requested": {
+      "$ref": "#/$defs/budgetDelta"
+    },
+    "policy_reentry": {
+      "const": "required"
+    },
+    "authority_source": {
+      "const": "original_envelope"
+    },
+    "resumed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "budgetDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actions",
+        "reasoning_tokens"
+      ],
+      "properties": {
+        "actions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reasoning_tokens": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
